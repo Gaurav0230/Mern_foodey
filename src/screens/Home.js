@@ -3,12 +3,30 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Card from "../components/Card";
 // import Carousel from "../components/Carousel";
+const carouselImages = [
+  "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGl6emF8ZW58MHx8MHx8fDA%3D", 
+  "https://plus.unsplash.com/premium_photo-1673439305009-821f62df6d31?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGl6emF8ZW58MHx8MHx8fDA%3D", 
+  "https://images.unsplash.com/photo-1606152196365-d1ce5ea838b5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHBpenphfGVufDB8fDB8fHww", 
+  "https://plus.unsplash.com/premium_photo-1683619761468-b06992704398?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YnVyZ2VyfGVufDB8fDB8fHww", 
+  "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YnVyZ2VyfGVufDB8fDB8fHww", 
+  "https://images.unsplash.com/photo-1508736793122-f516e3ba5569?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJ1cmdlcnxlbnwwfHwwfHx8MA%3D%3D", 
+  "https://images.unsplash.com/photo-1534790566855-4cb788d389ec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGJ1cmdlcnxlbnwwfHwwfHx8MA%3D%3D", 
+  "https://images.unsplash.com/photo-1633997454158-71c87e49cd31?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+  "https://images.unsplash.com/photo-1597905733802-7bec89b471b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+]
 
+function generateRandomCarousel(length, count) {
+  let randomArray = [];
+  for (let i = 0; i < count; i++) {
+      randomArray.push([carouselImages[Math.floor(Math.random() * length-1)]]);
+  }
+  return randomArray;
+}
 export default function Home() {
   const [search,setsearch]= useState("");
   const [fooditem, setfooditem] = useState([]);
   const [foodcat, setfoodcat] = useState([]);
-
+  const [carousel, setCarousel]= useState([]);
   const loadData = async () => {
     let response = await fetch("http://localhost:5000/api/foodData", {
       method: "POST",
@@ -26,6 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     loadData();
+    setCarousel(generateRandomCarousel(carouselImages.length, 3));
   }, []);
 
   return (
@@ -64,30 +83,20 @@ export default function Home() {
               </button> */}
             </div>
           </div>
-          <div className="carousel-item active" >
-            <img
-              src="https://source.unsplash.com/random/250×250/?pizza"
+            {carousel.map((image, index)=>{
+
+              
+              return <div key={"carouselImage"+index} className="carousel-item active" >
+
+              <img
+              src={image}
               style={{ filter: "brightness(30%)" , height: "500px", objectFit:"cover"}}
               className="d-block w-100"
               alt="..."
-            />
+              />
           </div>
-          <div className="carousel-item" >
-            <img
-              src="https://source.unsplash.com/random/250×250/?burger"
-              style={{ filter: "brightness(30%)" , height: "500px", objectFit:"cover"}}
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div className="carousel-item">
-            <img
-              src="https://source.unsplash.com/random/250×250/?pastry"
-              style={{ filter: "brightness(30%)" , height: "500px", objectFit:"cover"}}
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
+            })
+            }
         </div>
         <button
           className="carousel-control-prev"
@@ -117,7 +126,7 @@ export default function Home() {
       </div>
 
       <div className="container">
-        {(foodcat !== []) ? (
+        {(foodcat.length>0) ? (
           foodcat.map((data) => {
             return (
               <div className="row mb-3">
@@ -125,7 +134,7 @@ export default function Home() {
                   {data.CategoryName}
                 </div>
                 <hr />
-                {fooditem !== [] ? (
+                {fooditem.length>0 ? (
                   fooditem
                     .filter((item) => item.CategoryName === data.CategoryName && item.name.toLowerCase().includes(search))
                     .map((filteritems) => {

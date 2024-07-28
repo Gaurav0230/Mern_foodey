@@ -21,13 +21,13 @@ export default function MyOrders (){
         fetchOrder();
 
     },[])
-    console.log("Orders ", orders)
+    
     return <section>
         <Navbar />
 
         <div className="container mt-5">
         <h1 >My Orders</h1>
-            {orders.length==0 && <h6 className="pt-5 mx-auto"> No Orders available</h6>}
+            {orders.length===0 && <h6 className="pt-5 mx-auto"> No Orders available</h6>}
       <div className="row pt-4">
         {orders.map(order => (
           <div key={order._id} className="col-md-4 mb-4">
