@@ -5,10 +5,28 @@ const OrderSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
   },
   order_data: {
-    type: Array,
+    type: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        qty: {
+          type: Number,
+          required: true,
+        },
+        size: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        }
+      },
+    ],
     required: true,
   },
 });
